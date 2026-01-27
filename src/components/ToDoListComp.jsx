@@ -1,4 +1,4 @@
-import { Container, Box, Stack, TextField, Typography, Divider, Button } from "@mui/material";
+import { Container, Box, Stack, TextField, Typography, Divider } from "@mui/material";
 import dayjs from 'dayjs';
 import timejs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -6,8 +6,6 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useState, useEffect } from "react";
-import { List, ListItem, ListItemText } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useContext } from 'react';
 import { NoteContext } from '../components/NoteContext';
 
@@ -16,7 +14,7 @@ export function Pickers({ GetData, GetOra, GetNota }) {
 
     return (
         <>
-            <Stack spacing={2} direction="column" alignItems="center" justifyContent="center" sx={{ textAlign: "center", mt: 1, mb: 3 }}>
+            {/* <Stack spacing={2} direction="column" alignItems="center" justifyContent="center" sx={{ textAlign: "center", mt: 1, mb: 3 }}>
                 <Typography variant="h4" sx={{ alignSelf: "center" }}>Area inserimento Nota</Typography>
                 <TextField
                     label="Inserisci qui la tua NOTA"
@@ -42,8 +40,39 @@ export function Pickers({ GetData, GetOra, GetNota }) {
                         onChange={(oraInserita) => GetOra(oraInserita)}
                     />
                 </LocalizationProvider>
+            </Stack> */}
 
-            </Stack>
+            <div className="flex flex-col items-center justify-center gap-5 dark:text-white ">
+                <Typography variant="h4">Inserisci qui la tua nota:</Typography>
+                <TextField
+                    label="Inserisci qui la tua NOTA"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    maxRows={6}
+                    className="dark:bg-white rounded-xl"
+                    onChange={(notaInserita) => GetNota(notaInserita.target.value)}
+                />
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker label="Inserisci la data"
+                        openTo="day"
+                        format="DD/MM/YYYY"
+                        className="dark:bg-white rounded-xl"
+                        onChange={(dataInserita) => GetData(dataInserita)} />
+
+                    <TimePicker
+                        label="Inserisci l'ora"
+                        format="HH:mm"
+                        ampm={false}
+                        orientation="portrait"
+                        className="dark:bg-white rounded-xl"
+                        onChange={(oraInserita) => GetOra(oraInserita)}
+                    />
+                </LocalizationProvider>
+            </div>
+
+
         </>
     )
 }
@@ -66,28 +95,42 @@ function getRandomColor() {
 }
 
 
-function CreaElementoLista({ elemento, elimina, exitAnim }) {
+function CreaElementoLista({ elemento, elimina }) {
     return (
         <>
-            <motion.div initial={{ opacity: 0, y: 50 }} // Inizia invisibile e un po' più in basso
-                animate={{ opacity: 1, y: 0 }}  // Si anima per apparire e salire
-                exit={exitAnim}
-                transition={{ duration: 0.5 }} // Dura mezzo secondo
-                style={{
-                    padding: '8px',
-                    width: '100%',
-                    border: `2px solid ${elemento.cb}`,
-                    borderRadius: '8px',
-                    marginBottom: '16px'
-                }}>
-                <Stack spacing={2}>
-                    <Typography variant="h5" sx={{ mt: 2, textDecoration: "underline" }}>Nota n°{elemento.indice}</Typography>
-                    <Typography variant="p" sx={{ mt: 2 }}>{elemento.nota}</Typography>
-                    <Typography variant="p" sx={{ mt: 2 }}>Data: {DataRefactor(elemento.data)}</Typography>
-                    <Typography variant="p" sx={{ mt: 2 }}>Orario: {OraRefactor(elemento.ora)}</Typography>
-                    <Button variant="contained" sx={{ width: "100px", bgcolor: "attenzione.main" }} onClick={() => elimina(elemento.indice)}>Elimina</Button>
-                </Stack>
-            </motion.div>
+
+            <div className="bg-white dark:bg-slate-400 p-6 rounded-2xl shadow-sm border-2 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 "
+                style={{ borderColor: elemento.cb }}
+            >
+                <div className="flex justify-between items-start mb-4 ">
+                    <div className="flex flex-col">
+                        <span className="text-xs font-bold text-slate-400 dark:text-black uppercase tracking-wider">Nota n°{elemento.indice}</span>
+                        <h4 className="text-lg font-bold text-slate-800">Dettagli Nota</h4>
+                    </div>
+                    <div className="flex flex-col items-end">
+                        <span className="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-lg border border-blue-100">
+                            {DataRefactor(elemento.data)}
+                        </span>
+                        <span className="text-[10px] text-slate-400 mt-1 italic">ore {OraRefactor(elemento.ora)}</span>
+                    </div>
+                </div>
+                <div className="w-full h-[200px] mb-4">
+                    <p className="text-slate-600 dark:text-black text-sm leading-relaxed mb-6 min-h-[80px] text-left break-words overflow-auto h-full">
+                        {elemento.nota}
+                    </p>
+                </div>
+
+
+                <button
+                    className="w-full bg-red-100 border border-black-300 dark:border dark:border-slate-600 hover:bg-red-500 hover:text-white text-slate-600 font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                    onClick={() => elimina(elemento.indice)}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Elimina Task
+                </button>
+            </div>
 
         </>
     )
@@ -104,19 +147,16 @@ function ListaNoteComp({ lista, onElimina }) {
 
     return (
         <>
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <Typography variant="h4" sx={{ mt: 2 }}>Le tue note:</Typography>
-                <List sx={{ width: "70%" }}>
-                    <AnimatePresence>
-                        {lista.map((elemento) => (
-                            <ListItem key={elemento.indice} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }} >
-                                {/* <ListItemText primary={CreaElementoLista(elemento, lista)} /> */}
-                                <CreaElementoLista elemento={elemento} elimina={onElimina} exitAnim={{opacity: 0, x: -100, transition: {duration: 0.4}}} />
-                            </ListItem>
-                        ))}
-                    </AnimatePresence>
-                </List>
-            </Box>
+            <div className="bg-[#374cbf] dark:bg-transparent  rounded-2xl shadow-sm border-2 p-6 mt-4">
+                <Typography variant="h4" className="text-white mb-2">Le tue note:</Typography>
+                <ul className="flex flex-col items-center mt-3">
+                    {lista.map((elemento) => (
+                        <li key={elemento.indice} className="mb-4 flex flex-col w-sm" >
+                            <CreaElementoLista elemento={elemento} elimina={onElimina} exitAnim={{ opacity: 0, x: -100, transition: { duration: 0.4 } }} />
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </>
 
     )
@@ -129,7 +169,7 @@ export function ToDoList() {
     const GetDataInput = (dataInserita) => setData(dataInserita);
     const GetOraInput = (oraInserita) => setOra(oraInserita);
     const GetNotaInput = (notaInserita) => setNota(notaInserita);
-    
+
     const listaNote = useContext(NoteContext).listaNote;
     const setListaNote = useContext(NoteContext).setListaNote;
 
@@ -152,26 +192,26 @@ export function ToDoList() {
 
     return (
         <>
-            <Container maxWidth="xxxl" sx={{ bgcolor: "background.paper", py: 5, display: "flex-box", justifyContent: "center" }}>
-                <Box sx={{ mb: 2 }}>
-                    <Stack spacing={2} sx={{ textAlign: "center" }}>
-                        <Typography variant="h2">To Do List</Typography>
-                        <Typography variant="p">Inserisci qui le tue cose da fare:</Typography>
-                    </Stack>
-                </Box>
-                <Divider variant="fullWidth" sx={{ border: 2 }} />
-                <Box sx={{ textAlign: "center", mb: 2 }}>
-                    <Pickers GetData={GetDataInput} GetOra={GetOraInput} GetNota={GetNotaInput} />
-                    <Button variant="contained" sx={{ color: "background.paper", fontWeight: "bold" }} onClick={() => AggiungiNotaALista(nota, data, ora)}>AGGIUNGI</Button>
-                </Box>
-                <Divider variant="fullWidth" sx={{ border: 2 }} />
+            <Box sx={{ mb: 2 }}>
+                <Stack spacing={2} sx={{ textAlign: "center" }}>
+                    <Typography variant="h2">To Do List</Typography>
+                    <Typography variant="p">Inserisci qui le tue cose da fare:</Typography>
+                </Stack>
+            </Box>
+            <Divider variant="fullWidth" sx={{ border: 2 }} />
+            <div className="flex flex-col items-center mb-4">
+                <Pickers GetData={GetDataInput} GetOra={GetOraInput} GetNota={GetNotaInput} />
+                <button
+                    className="w-max p-2 mt-5 bg-slate-500 dark:bg-white-500 hover:bg-slate-700 hover:text-white text-slate-100 font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                    onClick={() => AggiungiNotaALista(nota, data, ora)}>AGGIUNGI</button>
+            </div>
+            <Divider variant="fullWidth" sx={{ border: 2 }} />
 
-                <Divider variant="fullWidth" sx={{ border: 2 }} />
+            <Divider variant="fullWidth" sx={{ border: 2 }} />
 
-                <Box sx={{ textAlign: "center", mb: 2 }}>
-                    <ListaNoteComp lista={listaNote} onElimina={EliminaNota} />
-                </Box>
-            </Container>
+            <div className="flex items-center flex-col mb-4">
+                <ListaNoteComp lista={listaNote} onElimina={EliminaNota} />
+            </div>
         </>
     )
 }

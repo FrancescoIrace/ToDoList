@@ -6,6 +6,7 @@ export const getTheme = (mode) => createTheme({
             main: mode === "dark" ? "#949494" : "#374cbf",
             contrastText: mode === "dark" ? "#f5f5f5" : "#121212",
             hoverLink: mode === "dark" ? "#f5f5f5" : "#0d2cdd",
+            card: mode === "dark" ? "#585555" : "#f5f5f5",
         },
         secondary: {
             main: mode === "dark" ? "#3c3939" : "#7181db",
