@@ -147,8 +147,8 @@ function ListaNoteComp({ lista, onElimina }) {
 
     return (
         <>
-            <div className="bg-[#374cbf] dark:bg-transparent  rounded-2xl shadow-sm border-2 p-6 mt-4">
-                <Typography variant="h4" className="text-white mb-2">Le tue note:</Typography>
+            <div className="p-6 mt-4 w-[sm,md,lg]">
+                <Typography variant="h4" className="text-black dark:text-white mb-2">Le tue note:</Typography>
                 <ul className="flex flex-col items-center mt-3">
                     {lista.map((elemento) => (
                         <li key={elemento.indice} className="mb-4 flex flex-col w-sm" >
@@ -209,7 +209,7 @@ export function ToDoList() {
 
             <Divider variant="fullWidth" sx={{ border: 2 }} />
 
-            <div className="flex items-center flex-col mb-4">
+            <div className="flex items-center flex-col mb-4 ">
                 <ListaNoteComp lista={listaNote} onElimina={EliminaNota} />
             </div>
         </>
