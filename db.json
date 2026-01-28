@@ -1,0 +1,39 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "title": "Nota di Test",
+      "nota": "Questa nota arriva dal file JSON!",
+      "data": "2024-05-20",
+      "ora": "10:00"
+    },
+    {
+      "id": 2,
+      "title": "Nota",
+      "nota": "nota inserita ",
+      "data": "2026-01-28",
+      "ora": "23:11"
+    },
+    {
+      "id": 3,
+      "title": "Nota",
+      "nota": "fdsdf",
+      "data": "2026-01-28",
+      "ora": "23:13"
+    },
+    {
+      "id": 1769639224162,
+      "title": "Nota",
+      "nota": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"\n\n",
+      "data": "2026-01-28",
+      "ora": "23:26"
+    },
+    {
+      "id": 1769639325946,
+      "title": "Nota",
+      "nota": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"\n\n",
+      "data": "2026-01-28",
+      "ora": "23:28"
+    }
+  ]
+}

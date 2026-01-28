@@ -1,23 +1,34 @@
-import { Container, Box, Typography, Stack, Button, List, ListItem, ListItemText, Grid, Card, CardContent } from "@mui/material";
+import { Typography, Button, List, ListItem, ListItemText, Grid, Card, CardContent } from "@mui/material";
 import { useState } from "react";
 import { DataRefactor } from "./ToDoListComp";
 import dayjs from 'dayjs';
 import { useContext } from 'react';
 import { NoteContext } from '../context/NoteContext';
+import { useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { div } from "framer-motion/client";
 
+export async function loader() {
+    const response = await fetch('http://localhost:3000/api/notes');
+    if (!response.ok) throw new Error("Errore backend");
+    const notes = await response.json();
+    return { notes };
+}
 
 export function Dashboard() {
+    const { notes } = useLoaderData(); // Prende i dati dal loader sopra
 
     const [mostraNote, setMostraNote] = useState(false);
     const impostaNoteT = () => setMostraNote(!mostraNote);
     const [mostraNoteOggi, setMostraNoteOggi] = useState(false);
     const impostaNoteOggi = () => setMostraNoteOggi(!mostraNoteOggi);
 
-    const { listaNote, totale } = useContext(NoteContext);
+    //Questo per utilizzare il context
+    // const { listaNote, totale } = useContext(NoteContext);
 
-    const totaleNote = listaNote.length;
-    const noteOggi = listaNote.filter(note => dayjs(note.data).isSame(dayjs(), 'day')).length;
-    const listaNoteOggi = listaNote.filter(note => dayjs(note.data).isSame(dayjs(), 'day'));
+    const totaleNote = notes.length;
+    const noteOggi = notes.filter(note => dayjs(note.data).isSame(dayjs(), 'day')).length;
+    const listaNoteOggi = notes.filter(note => dayjs(note.data).isSame(dayjs(), 'day'));
 
     return (
         <>
@@ -42,6 +53,7 @@ export function Dashboard() {
 
                 {/* Card 1: Totale Note */}
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex", justifyContent: "center" }}>
+
                     <Card sx={{
                         width: '100%',
                         maxWidth: 400,
@@ -65,10 +77,15 @@ export function Dashboard() {
                             <Button variant="contained" sx={{ bgcolor: "primary.main", color: "white", width: "100px" }} onClick={() => impostaNoteT()}>{mostraNote ? "Nascondi" : "Mostra"}</Button>
                             {mostraNote && (
                                 <List>
-                                    {listaNote.map((elemento) => (
-                                        <ListItem key={elemento.indice} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }} >
-                                            <ListItemText primary={"Nota del: " + DataRefactor(elemento.data)} secondary={elemento.nota} />
-                                        </ListItem>
+                                    {notes.map((elemento) => (
+                                        <div className="flex-col m-2 border-1 border-slate-400 dark:border-slate-600 rounded-xl">
+                                            <Link to={`./note/${elemento.id}`}>
+                                                <ListItem key={elemento.id} >
+                                                    <ListItemText primary={"Nota del: " + DataRefactor(elemento.data)} secondary={elemento.nota} />
+                                                </ListItem>
+                                            </Link>
+                                        </div>
+
                                     ))}
                                 </List>
                             )}

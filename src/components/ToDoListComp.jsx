@@ -184,6 +184,40 @@ export function ToDoList() {
         }
     }
 
+    const gestisciSalvataggio = async () => {
+        if (nota === "") {
+            alert("Inserisci una nota");
+            return;
+        }
+        // 1. Prepariamo l'oggetto nota con i dati dei tuoi stati (es. titolo, testo, data)
+        const nuovaNota = {
+            title: "Nota", // Il valore del tuo TextField per il titolo
+            content: nota, // Il valore del tuo TextField per la nota
+            data: data.format('YYYY-MM-DD'), // Formattiamo dayjs per il server
+            ora: ora.format('HH:mm')
+        };
+
+        try {
+            // 2. Inviamo i dati al tuo server Express
+            const response = await fetch("http://localhost:3000/api/notes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(nuovaNota),
+            });
+
+            if (response.ok) {
+                // 3. Se il salvataggio va a buon fine, puliamo i campi
+                setNota("");
+                alert("Nota salvata con successo!");
+
+                // OPZIONALE: Se vuoi che la Dashboard si aggiorni subito:
+                // navigate("/"); 
+            }
+        } catch (error) {
+            console.error("Errore durante il salvataggio:", error);
+        }
+    };
+
 
     function EliminaNota(idDaEliminare) {
         // Usiamo il functional update per essere sicuri di avere lo stato più recente
@@ -203,7 +237,9 @@ export function ToDoList() {
                 <Pickers GetData={GetDataInput} GetOra={GetOraInput} GetNota={GetNotaInput} />
                 <button
                     className="w-max p-2 mt-5 bg-slate-500 dark:bg-white-500 hover:bg-slate-700 hover:text-white text-slate-100 font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
-                    onClick={() => AggiungiNotaALista(nota, data, ora)}>AGGIUNGI</button>
+                    // onClick={() => AggiungiNotaALista(nota, data, ora)}>AGGIUNGI</button>
+                    onClick={() => gestisciSalvataggio()}
+                >AGGIUNGI</button>
             </div>
             <Divider variant="fullWidth" sx={{ border: 2 }} />
 
