@@ -8,7 +8,7 @@ import Toggle from "./ui/Toggle";
 import { NavLink } from "react-router-dom";
 import { Button } from "@mui/material";
 
-export const Navbar = ({ mode, setMode }) => {
+export const Navbar = () => {
 
   return (
     <AppBar position="sticky" elevation={1}>
@@ -44,7 +44,7 @@ export const Navbar = ({ mode, setMode }) => {
         </Button>
 
         <Box>
-          <Toggle mode={mode} setMode={setMode} />
+          <Toggle />
         </Box>
 
       </Toolbar>
@@ -52,4 +52,3 @@ export const Navbar = ({ mode, setMode }) => {
   );
 };
 
-export default Navbar;

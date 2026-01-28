@@ -7,7 +7,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useState, useEffect } from "react";
 import { useContext } from 'react';
-import { NoteContext } from '../components/NoteContext';
+import { NoteContext } from '../context/NoteContext';
 
 
 export function Pickers({ GetData, GetOra, GetNota }) {

@@ -1,7 +1,7 @@
-import {Container, Box, Typography} from "@mui/material";
-import {Link} from "react-router-dom";
+import { Container, Box, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
-const PaginaNonTrovata = () => {
+export const PaginaNonTrovata = () => {
     return (
         <Container>
             <Box
@@ -24,4 +24,3 @@ const PaginaNonTrovata = () => {
 };
 
 
-export default PaginaNonTrovata;

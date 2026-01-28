@@ -1,12 +1,15 @@
 import { IconButton } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
+import { useThemeContext } from "../../context/ThemeContext";
 
-export const Toggle = ({ mode, setMode }) => {
+export function Toggle() {
+  const { mode, toggleTheme } = useThemeContext();
+
   return (
     <IconButton
       onClick={() =>
-        setMode((prev) => (prev === "light" ? "dark" : "light"))
+        toggleTheme()
       }
     >
       {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}

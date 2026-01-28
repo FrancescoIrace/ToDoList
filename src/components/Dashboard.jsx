@@ -3,7 +3,7 @@ import { useState } from "react";
 import { DataRefactor } from "./ToDoListComp";
 import dayjs from 'dayjs';
 import { useContext } from 'react';
-import { NoteContext } from '../components/NoteContext';
+import { NoteContext } from '../context/NoteContext';
 
 
 export function Dashboard() {
