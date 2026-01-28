@@ -13,8 +13,16 @@ import { useRevalidator, useNavigate } from "react-router-dom";
 export async function listLoader() {
     const response = await fetch('http://localhost:3000/api/notes');
     if (!response.ok) throw new Error("Errore backend");
-    const listaNote = await response.json();
-    return { listaNote };
+    const notes = await response.json();
+    // Ordiniamo per data e ora decrescente (la più recente prima)
+    const notesOrdinate = notes.sort((a, b) => {
+        // Combinando data e ora creiamo un oggetto Date per il confronto
+        const dataA = new Date(`${a.data}T${a.ora}`);
+        const dataB = new Date(`${b.data}T${b.ora}`);
+        return dataB - dataA; // Ordine decrescente
+    });
+
+    return { listaNote: notesOrdinate };
 }
 
 export function Pickers({ GetData, GetOra, GetNota }) {

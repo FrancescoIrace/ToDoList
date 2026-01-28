@@ -11,8 +11,14 @@ import { div } from "framer-motion/client";
 export async function loader() {
     const response = await fetch('http://localhost:3000/api/notes');
     if (!response.ok) throw new Error("Errore backend");
-    const notes = await response.json();
-    return { notes };
+    const note = await response.json();
+        const notesOrdinate = note.sort((a, b) => {
+        // Combinando data e ora creiamo un oggetto Date per il confronto
+        const dataA = new Date(`${a.data}T${a.ora}`);
+        const dataB = new Date(`${b.data}T${b.ora}`);
+        return dataB - dataA; // Ordine decrescente
+    });
+    return { notes: notesOrdinate };
 }
 
 export function Dashboard() {
