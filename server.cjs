@@ -35,6 +35,26 @@ app.post('/api/notes', (req, res) => {
   res.status(201).json(newNote);
 });
 
+
+// Rotta per eliminare una nota
+app.delete('/api/notes/:id', (req, res) => {
+  const data = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+
+  // Teniamo tutte le note TRANNE quella da eliminare
+  const nuoveNote = data.notes.filter(n => String(n.id) !== String(req.params.id));
+
+  if (data.notes.length === nuoveNote.length) {
+    return res.status(404).json({ error: "Nota non trovata" });
+  }
+
+  data.notes = nuoveNote;
+
+  // Salviamo su file
+  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+  res.json({ message: "Nota eliminata con successo" });
+});
+
+
 app.get('/api/notes/:id', (req, res) => {
   const data = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
   // Cerchiamo la nota che ha lo stesso ID passato nell'URL

@@ -6,9 +6,16 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useState, useEffect } from "react";
-import { useContext } from 'react';
 import { NoteContext } from '../context/NoteContext';
+import { useLoaderData } from "react-router-dom";
+import { useRevalidator, useNavigate } from "react-router-dom";
 
+export async function listLoader() {
+    const response = await fetch('http://localhost:3000/api/notes');
+    if (!response.ok) throw new Error("Errore backend");
+    const listaNote = await response.json();
+    return { listaNote };
+}
 
 export function Pickers({ GetData, GetOra, GetNota }) {
 
@@ -104,14 +111,14 @@ function CreaElementoLista({ elemento, elimina }) {
             >
                 <div className="flex justify-between items-start mb-4 ">
                     <div className="flex flex-col">
-                        <span className="text-xs font-bold text-slate-400 dark:text-black uppercase tracking-wider">Nota n°{elemento.indice}</span>
+                        <span className="text-xs font-bold text-slate-400 dark:text-black uppercase tracking-wider">Nota n°{elemento.id}</span>
                         <h4 className="text-lg font-bold text-slate-800">Dettagli Nota</h4>
                     </div>
                     <div className="flex flex-col items-end">
                         <span className="bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 rounded-lg border border-blue-100">
-                            {DataRefactor(elemento.data)}
+                            {elemento.data}
                         </span>
-                        <span className="text-[10px] text-slate-400 mt-1 italic">ore {OraRefactor(elemento.ora)}</span>
+                        <span className="text-[10px] text-slate-400 mt-1 italic">ore {elemento.ora}</span>
                     </div>
                 </div>
                 <div className="w-full h-[200px] mb-4">
@@ -123,12 +130,12 @@ function CreaElementoLista({ elemento, elimina }) {
 
                 <button
                     className="w-full bg-red-100 border border-black-300 dark:border dark:border-slate-600 hover:bg-red-500 hover:text-white text-slate-600 font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
-                    onClick={() => elimina(elemento.indice)}
+                    onClick={() => elimina(elemento.id)}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    Elimina Task
+                    Elimina Nota {elemento.id}
                 </button>
             </div>
 
@@ -151,7 +158,7 @@ function ListaNoteComp({ lista, onElimina }) {
                 <Typography variant="h4" className="text-black dark:text-white mb-2">Le tue note:</Typography>
                 <ul className="flex flex-col items-center mt-3">
                     {lista.map((elemento) => (
-                        <li key={elemento.indice} className="mb-4 flex flex-col w-sm" >
+                        <li key={elemento.id} className="mb-4 flex flex-col w-sm" >
                             <CreaElementoLista elemento={elemento} elimina={onElimina} exitAnim={{ opacity: 0, x: -100, transition: { duration: 0.4 } }} />
                         </li>
                     ))}
@@ -169,20 +176,12 @@ export function ToDoList() {
     const GetDataInput = (dataInserita) => setData(dataInserita);
     const GetOraInput = (oraInserita) => setOra(oraInserita);
     const GetNotaInput = (notaInserita) => setNota(notaInserita);
+    const revalidator = useRevalidator();
+    const navigate = useNavigate();
 
-    const listaNote = useContext(NoteContext).listaNote;
-    const setListaNote = useContext(NoteContext).setListaNote;
-
-    const AggiungiNotaALista = (nota, data, ora, indice, cb) => {
-        if (nota === "") {
-            alert("Inserisci una nota");
-            return;
-        } else {
-            const nuovaNota = { nota: nota, data: data, ora: ora, indice: Date.now(), cb: getRandomColor() };
-            setListaNote(prev => [nuovaNota, ...prev]);
-            return;
-        }
-    }
+    // const listaNote = useContext(NoteContext).listaNote;
+    // const setListaNote = useContext(NoteContext).setListaNote;
+    const { listaNote } = useLoaderData();
 
     const gestisciSalvataggio = async () => {
         if (nota === "") {
@@ -209,20 +208,38 @@ export function ToDoList() {
                 // 3. Se il salvataggio va a buon fine, puliamo i campi
                 setNota("");
                 alert("Nota salvata con successo!");
-
+                revalidator.revalidate();
                 // OPZIONALE: Se vuoi che la Dashboard si aggiorni subito:
-                // navigate("/"); 
+                // navigate("/todo"); 
             }
         } catch (error) {
             console.error("Errore durante il salvataggio:", error);
         }
     };
 
+    const gestisciEliminazione = async (id) => {
+        if (!window.confirm("Sei sicuro di voler eliminare questa nota?")) return;
 
-    function EliminaNota(idDaEliminare) {
-        // Usiamo il functional update per essere sicuri di avere lo stato più recente
-        setListaNote(prevNote => prevNote.filter(nota => nota.indice !== idDaEliminare));
+        try {
+            const response = await fetch(`http://localhost:3000/api/notes/${id}`, {
+                method: "DELETE",
+            });
+
+            if (response.ok) {
+                // 1. Forza il ricaricamento dei dati per aggiornare la lista
+                revalidator.revalidate();
+                alert("Nota eliminata con successo!");
+
+                // 2. Se sei nella pagina di dettaglio, torna alla dashboard dopo l'eliminazione
+                if (window.location.pathname.includes("/note/")) {
+                    navigate("/");
+                }
+            }
+        } catch (error) {
+            console.error("Errore durante l'eliminazione:", error);
+        }
     }
+
 
     return (
         <>
@@ -246,7 +263,7 @@ export function ToDoList() {
             <Divider variant="fullWidth" sx={{ border: 2 }} />
 
             <div className="flex items-center flex-col mb-4 ">
-                <ListaNoteComp lista={listaNote} onElimina={EliminaNota} />
+                <ListaNoteComp lista={listaNote} onElimina={gestisciEliminazione} />
             </div>
         </>
     )

@@ -119,19 +119,19 @@ export function Dashboard() {
                             {mostraNoteOggi && (
                                 <List>
                                     {listaNoteOggi.map((elemento) => (
-                                        <ListItem key={elemento.indice} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }} >
-                                            <ListItemText primary={"Nota del: " + DataRefactor(elemento.data)} secondary={elemento.nota} />
-                                        </ListItem>
+                                        <div className="flex-col m-2 border-1 border-slate-600 dark:border-slate-400 rounded-xl">
+                                            <ListItem key={elemento.indice} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }} >
+                                                <ListItemText primary={"Nota del: " + DataRefactor(elemento.data)} secondary={elemento.nota} />
+                                            </ListItem>
+                                        </div>
                                     ))}
-                                </List>
-                            )}
-                        </CardContent>
+                                        </List>
+                                    )}
+                                </CardContent>
                     </Card>
                 </Grid>
 
             </Grid>
-
-
 
 
         </>

@@ -7,18 +7,15 @@ function App() {
 
   return (
     <>
-    {/* CONTEXT DOVE GESTIAMO IL TEMA */}
+      {/* CONTEXT DOVE GESTIAMO IL TEMA */}
       <ThemeContextProvider>
-                {/* CONTEXT DOVE GESTIAMO LA LISTA DELLE NOTE */}
+        {/* CONTEXT DOVE GESTIAMO LA LISTA DELLE NOTE */}
         <NoteProvider >
           {/* 1. Definiamo il router */}
           <RouterProvider router={router} />
         </NoteProvider>
 
       </ThemeContextProvider>
-
-
-
     </>
   )
 }
